@@ -1,13 +1,12 @@
 const { default: mongoose } = require('mongoose')
 const Workout = require('../models/workoutModel')
 
-
 // GET all workouts
 const getWorkouts = async (req, res) => {
-  const workouts = await Workout.find({}).sort({createdAt: -1})
+  const user_id = req.user._id
+  const workouts = await Workout.find({user_id}).sort({createdAt: -1})
   res.status(200).json(workouts)
 }
-
 
 // GET all single
 const getWorkout = async (req, res) => {
@@ -25,7 +24,6 @@ const getWorkout = async (req, res) => {
 
   res.status(200).json(workout)
 }
-
 
 // POST new workout
 const createWorkout = async (req, res) => {
@@ -50,13 +48,13 @@ const createWorkout = async (req, res) => {
 
   // doc to db
   try {
-    const workout = await Workout.create({title, load, reps})
+    const user_id = req.user._id
+    const workout = await Workout.create({title, load, reps, user_id})
     res.status(200).json(workout)
   } catch (error) {
     res.status(400).json({error: error.message})
   }
 }
-
 
 // DELETE new workout
 const deleteWorkout = async (req, res) => {
@@ -75,7 +73,6 @@ const deleteWorkout = async (req, res) => {
   res.status(200).json(workout)
 }
 
-
 // UPDATE new workout
 const updateWorkout = async (req, res) => {
   const {id} = req.params
@@ -92,9 +89,6 @@ const updateWorkout = async (req, res) => {
 
   res.status(200).json(workout)
 }
-
-
-
 
 module.exports = {
   createWorkout,
